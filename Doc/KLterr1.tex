@@ -1,0 +1,126 @@
+\documentclass{amsart}
+\usepackage{amssymb}
+%\theoremstyle{plain}
+%\newtheorem{lem}{Lemma}%[section]
+%\newtheorem{thm}{Theorem}%[section]
+%\newtheorem{cor}{Corollary}
+%\newtheorem{prop}{Proposition}%[section]
+%\newtheorem{exa}{Example}%[section]
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{verbatim}
+
+\usepackage{amssymb, epsfig}
+\usepackage[leqno]{amsmath}
+\usepackage{eurosym}
+
+
+\def\P{\mathbb{P}}
+\def\Q{\mathbb{Q}}
+\def\E{\mathbb{E}}
+
+\title{Building Artificial Terrain from KL Inspired Decompositions of Stochastic Processes}
+\author{TBD}
+\begin{document}
+
+\maketitle
+
+\section{Background and Motivation}
+
+Let $W_t$ be a Brownian motion defined for $t\in[0,1]$.  The autocovariance function 
+associated with $W_t$ is given by $K(s,t)=\min(s,t)$.  Define a linear covariance operator
+%
+\begin{equation}
+    L[\phi]=\int_0^1K(s,t)\phi(s)ds, \quad\mathrm{for}\quad \phi\in L^1[0,1].
+\end{equation}
+%
+The eigenvalues $\lambda_k$ and eigenfunctions $\phi_k(t)$ of $L$ are determined by solving 
+the Fredholm equation
+%
+\begin{equation}
+    L[\phi_k] = \lambda_k\phi_k,\quad\mathrm{subject\;\;to}\quad \phi_k(0)=\phi_k'(0)=1,
+\end{equation}
+%
+and are given by
+%
+\begin{equation}
+    \lambda_k = \frac{1}{(k-1/2)^2\pi^2},\quad 
+    \phi_k(t) = \sqrt{2}\sin\left(\left[k-\frac{1}{2}\right]\pi t\right).
+\end{equation}
+%
+From the Karhumen--Loeve decomposition theorem [PUT A REFERENCE TO A RELEVANT 
+STOCHASTIC PROCESSES TEXT HERE],
+one can represent this process by
+%
+\begin{equation}
+    W_t = \sum_{k=1}^\infty Z_k \sqrt{\lambda_k}\phi_k(t), \label{proc}
+\end{equation}
+%
+where here the $Z_k$ are independent identically distributed $\mathcal{N}(0,1)$ 
+random variables. We will develop an artificial terrain generation algorithm based 
+on partial sums of representations of stochastic process as well as similar representations
+that do not necessarily originate from a stochastic process of this form.
+
+\section{Order of Algorithms (Processing Chain)}
+
+\begin{enumerate}
+    \item First, generate a representation of the form in equation (\ref{proc})
+        $X_t(\Theta)$ that potentially depends on some parameters $\Theta$, e.g. 
+        $\Theta=\{\sigma,x_0,x_1\}$ could specify the variance $\sigma$, the starting 
+        point $x_0$, and the end point $x_1$ of $X_t$.
+    \item Next, find a way to either combine $X_t(\Theta_1)$ and $X_s(\Theta_2)$ 
+        into a two dimensional function $f(X_t(\Theta_1), X_s(\Theta_2))$, or 
+        possibly construct another representation of a process $Y_s(\Theta_2)$ 
+        and consider functions of the form $f(X_t(\Theta_1), Y_s(\Theta_2))$. Label 
+        the final function $f(s,t)$ where here we keep $s,t\in[0,1]$.
+    \item Then, define a uniform grid $\{(s_i,t_j)\}$ where here $i,j=1,\ldots,n$, 
+        and $s_1=t_1=0$, $s_n=t_n=1$, sample $f$ on this grid, and denote the 
+        resulting samples by $f_{ij} = f(s_i,t_j)$.
+    \item Now, design and apply filters to this sampled data so that we can 
+        make the final output look like the terrain that we are trying to mimic; these 
+        filters should preserve the basic form of the $f_{ij}$ samples.
+        Two potentially useful filters that come to mind are adding random noise to the 
+        $f_{ij}$, i.e. let $f_{ij}\rightarrow f_{ij} + z_{ij}$ where 
+        we take $z_{ij}\sim\mathcal{N}(0,\sigma_{ij})$ and choose the 
+        standard deviations $\sigma_{ij}$ according to our terrain modeling needs.
+        A second idea would be to apply a Gaussian blur (Phillip said this first!)
+        or some other smoothing filter either directly to the $f_{ij}$ or after 
+        applying the above normal perturbation. What are other relevant filters? 
+    \item The final output should be a set of triples $\{(x_i,y_i,\tilde{f}_{ij}\})$
+        where $i,j=1,\ldots,n$, and here
+        we use the notation $\tilde{f}_{ij}$ to denote the $f_{ij}$ 
+        after applying the above filtering steps.
+\end{enumerate}
+
+\section{Potential Ideas for Extensions and Things to Think About}
+
+\begin{enumerate}
+    \item Given a representation $X_t$ of a process like in equation (\ref{proc}), 
+        find functions $f$ of the form $f(X_t,X_s)$ whose plots look like interesting 
+        terrain.
+    \item Can we build two dimensional representations directly?  For instance 
+    $$
+    f(s,t) = \sum_{k=1}^n Z_k \phi(s,t)
+    $$
+        %
+        where we are free to choose $Z_k$ and $\phi(s,t)$ to our liking?
+    \item Change the distribution from which the $Z_k$ are drawn from; change the 
+        eigenvalues and the eigenfunction to some other functions.  What choices give 
+        interesting terrain?
+    \item Find processes other than a Brownian motion that have explicit covariance 
+        functions.  We may not be able to solve the resulting integral equation exactly
+        but perhaps we can find an integral equation solver to find the eigenfunctions 
+        and the eigenvalues. 
+    \item Think of ways to tile terrain, i.e. can we build a mountain by say 
+        having a grid of nine individual surfaces with the center surface the most 
+        volatile (i.e. has peaks etc.) and the surrounding eight cells being 
+        more flat bound have a mountain structure? 
+    \item Keep everything cool; this if for fun :) 
+\end{enumerate}
+
+\section{Example of How to Get Started}
+
+HERE WE GIVE AN EXAMPLE (PUT PLOTS THAT WE HAVE MADE BEFORE)
+
+\end{document}
+
