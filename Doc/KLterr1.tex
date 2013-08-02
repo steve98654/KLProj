@@ -20,13 +20,14 @@
 \def\E{\mathbb{E}}
 
 \title{Building Artificial Terrain from KL Inspired Decompositions of Stochastic Processes}
-\author{TBD}
+\author{Phillip, Steve, Steve, Matt}
 \begin{document}
 
 \maketitle
 
 \section{Background and Motivation}
 
+\subsection{Construction of a one dimensional BM}
 Let $W_t$ be a Brownian motion defined for $t\in[0,1]$.  The autocovariance function 
 associated with $W_t$ is given by $K(s,t)=\min(s,t)$.  Define a linear covariance operator
 %
@@ -60,6 +61,54 @@ where here the $Z_k$ are independent identically distributed $\mathcal{N}(0,1)$
 random variables. We will develop an artificial terrain generation algorithm based 
 on partial sums of representations of stochastic process as well as similar representations
 that do not necessarily originate from a stochastic process of this form.
+
+\subsection{Useful triples $(Z_k,\lambda_k,\phi_k)$}
+
+\subsection{Extending to a Two Dimensional Surface}
+
+We are interested in creating two dimensional simulated terrain from one 
+dimensional stochastic process representations of the form (\ref{proc}).
+We first take a partial sum product of two such representations which we denote by
+%
+\begin{equation}
+    f(s,t,n) = W_s W_t = \sum_{j=1}^n\sum_{k=1}^n Z_j Z_k \sqrt{\lambda_j\lambda_k}
+    \phi_j(s)\phi_k(t),\quad\mathrm{for} t\in[0,1].\label{prod}
+\end{equation}
+%
+We next form a rotated version of this graph in the plane by first considering 
+the coordinates $(s,t)\in\mathbb{R}^2$. Applying a coordinate transformation,
+%
+\begin{equation}
+%R(\theta) = \left(\begin{array}{cc} 
+%\sin\theta & \cos\theta \\
+%-\cos\theta & \sin\theta
+%\end{array} \right), 
+\quad (s,t) \rightarrow (s\cos\theta - t\sin\theta, s\sin\theta + t\cos\theta)
+\equiv (\tilde s, \tilde t),
+\end{equation}
+%
+by an angle $\theta$, we can extend equation (\ref{prod}) to define
+%
+\begin{equation}
+f(\tilde s,\tilde t,\theta,n) = \sum_{j=1}^n\sum_{k=1}^n Z_j Z_k \sqrt{\lambda_j\lambda_k}
+\phi_k(\tilde s)\phi_j(\tilde t),\quad\mathrm{for}\quad t\in[0,1].
+\end{equation}
+%
+PUT A PLOT OF THIS FUNCTION FOR $\theta = 0$ HERE.
+
+Note that this function exhibits a significant amount of regular 
+behavior due to the fact that it was constructed as a product function.
+We wish to break this symmetry to make the terrain more realistic.  This is 
+done by the following procedure.  First fix an $m$ (typically $m>10$) and 
+uniformly sample $m$ points $\theta_i = 2\pi i/m$ from $\theta\in[0,2\pi]$ from the 
+circle and define 
+%
+\begin{equation}
+    g(s,t,n,m) = \frac{1}{m}\sum_{i=1}^m f(s,t,\theta_i,n), \quad\mathrm{where}
+    \quad (s,t)\in\mathbb{D}
+\end{equation}
+%
+where here we use $\mathbb{D}$ to denote the unit disk.
 
 \section{Order of Algorithms (Processing Chain)}
 
